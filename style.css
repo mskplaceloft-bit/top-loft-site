@@ -377,6 +377,7 @@ EVENTS ── */
 /* ── НАСТОЯЩАЯ ФОРМА TILDA (заменяет проксирующую JS-форму) ──
    Перемещается в .form-box скриптом lofts.js. Всё стилизуется под .fg/.f-submit выше. */
 #rec2469650801{
+  display:block!important;visibility:visible!important;opacity:1!important;
   background:transparent!important;
   padding:0!important;margin:0!important;max-width:none!important;width:100%!important;
 }
