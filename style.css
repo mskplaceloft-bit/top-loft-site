@@ -689,9 +689,6 @@ EVENTS ── */
 }
 #mb-loftmodal .lm-video-btn:active{transform:translateY(0) scale(0.97)}
 
-/* Настоящая форма Tilda — используется только для реальной отправки, скрыта визуально */
-#rec2469650801{display:none!important}
-
 /* ── Touch: info-hidden скрывает инфо на карточке ── */
 @media(hover:none){
   #mb2 .loft-card .lc-body{transition:opacity 0.3s ease;}
