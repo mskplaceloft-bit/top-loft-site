@@ -385,7 +385,8 @@ EVENTS ── */
 #rec2469650801 .t-col{padding:0!important;max-width:none!important;width:100%!important;margin:0!important}
 #rec2469650801 .t-form{background:transparent!important}
 #rec2469650801 .t-form__inputsbox{
-  display:grid!important;grid-template-columns:1fr 1fr!important;gap:0 1rem!important;
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:0.5rem 1rem!important;
+  align-items:start!important;
 }
 #rec2469650801 .t-input-group{margin-bottom:1.25rem!important;grid-column:span 1}
 #rec2469650801 .t-input-group_ta,
