@@ -270,104 +270,30 @@
   }
 
 function initForm(){
-    var form = document.getElementById('mb2-form');
-    if(!form){ setTimeout(initForm, 500); return; }
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      var btn = form.querySelector('.f-submit');
-      var ok = document.getElementById('mb2-ok');
-      var realForm = document.getElementById('form2469650801');
+    // Раньше здесь была JS-имитация: скрытая копия настоящей формы Tilda заполнялась
+    // программно и "нажималась" через клик по кнопке. Это трижды ломалось по разным
+    // причинам (маска телефона, гонка с async-скриптом Tilda, вероятная защита от
+    // спама/капча на программное заполнение) — поэтому теперь используем настоящую
+    // форму Tilda напрямую, просто визуально перемещая и стилизуя её под дизайн сайта.
+    var box = document.querySelector('#mb2-booking .form-box');
+    var realRec = document.getElementById('rec2469650801');
+    if(!box || !realRec){ setTimeout(initForm, 500); return; }
+    box.appendChild(realRec);
 
-      if(!realForm){
-        if(btn) btn.style.display='none';
-        if(ok) ok.style.display='block';
-        return;
-      }
-
-      var nameVal = form.elements['name'] ? form.elements['name'].value : '';
-      var phoneVal = form.elements['phone'] ? form.elements['phone'].value : '';
-      var dateVal = form.elements['date'] ? form.elements['date'].value : '';
-      var loftVal = form.elements['loft'] ? form.elements['loft'].value : '';
-      var commentVal = form.elements['comment'] ? form.elements['comment'].value : '';
-
-      var dateParts = dateVal.split('-');
-      var tildaDate = dateParts.length === 3 ? (dateParts[2]+'-'+dateParts[1]+'-'+dateParts[0]) : '';
-
-      var rName = realForm.querySelector('#input_5557513689601');
-      var rPhone = realForm.querySelector('#input_5557513689602');
-      var rDate = realForm.querySelector('#input_1784029287464');
-      var rLoft = realForm.querySelector('#input_1784029319579');
-      var rComment = realForm.querySelector('#input_5557513689603');
-
-      function setAndNotify(el, val){
-        if(!el) return;
-        el.value = val;
-        el.dispatchEvent(new Event('input', {bubbles:true}));
-        el.dispatchEvent(new Event('change', {bubbles:true}));
-        el.dispatchEvent(new Event('keyup', {bubbles:true}));
-        el.dispatchEvent(new Event('blur', {bubbles:true}));
-      }
-      setAndNotify(rName, nameVal);
-      setAndNotify(rPhone, phoneVal);
-      setAndNotify(rDate, tildaDate);
-      setAndNotify(rLoft, loftVal);
-      var commentWithPhone = 'Тел: '+phoneVal+(commentVal ? ' | '+commentVal : '');
-      setAndNotify(rComment, commentWithPhone);
-
-      var originalBtnText = btn ? btn.textContent : '';
-      if(btn){ btn.disabled = true; btn.textContent = 'Отправка...'; }
-
+    var realForm = document.getElementById('form2469650801');
+    if(realForm && window.MutationObserver){
       var successBox = realForm.querySelector('.js-successbox');
-      var errorBoxes = realForm.querySelectorAll('.js-errorbox-all');
-      var settled = false;
-      var observer = null;
-
-      function cleanup(){
-        if(observer) observer.disconnect();
-      }
-      function showThanks(){
-        if(settled) return;
-        settled = true;
-        cleanup();
-        if(btn) btn.style.display='none';
-        if(ok) ok.style.display='block';
-        if(window.ym) ym(110820287, 'reachGoal', 'form_submit');
-      }
-      function showError(){
-        if(settled) return;
-        settled = true;
-        cleanup();
-        if(btn){ btn.disabled = false; btn.textContent = originalBtnText; }
-        alert('Не удалось отправить заявку. Пожалуйста, напишите нам в Telegram или по телефону — контакты ниже.');
-      }
-
-      if(window.MutationObserver){
-        observer = new MutationObserver(function(){
-          if(successBox && successBox.style.display !== 'none'){ showThanks(); return; }
-          for(var i=0;i<errorBoxes.length;i++){
-            if(errorBoxes[i].style.display !== 'none'){ showError(); return; }
+      if(successBox){
+        var fired = false;
+        var observer = new MutationObserver(function(){
+          if(!fired && successBox.style.display !== 'none'){
+            fired = true;
+            if(window.ym) ym(110820287, 'reachGoal', 'form_submit');
           }
         });
-        if(successBox) observer.observe(successBox, {attributes:true, attributeFilter:['style']});
-        for(var j=0;j<errorBoxes.length;j++){ observer.observe(errorBoxes[j], {attributes:true, attributeFilter:['style']}); }
+        observer.observe(successBox, {attributes:true, attributeFilter:['style']});
       }
-
-      setTimeout(function(){ if(!settled) showThanks(); }, 9000);
-
-      var realBtn = realForm.querySelector('.t-submit');
-      function attemptClick(){
-        if(settled) return;
-        if(realBtn){ realBtn.click(); }
-        else if(realForm.requestSubmit){ realForm.requestSubmit(); }
-      }
-      // Скрипт Tilda для обработки форм (tilda-forms-1.0.min.js) грузится async и может
-      // ещё не успеть навесить обработчик на кнопку к моменту первого клика — поэтому
-      // повторяем клик несколько раз с паузами, пока не придёт подтверждение отправки.
-      attemptClick();
-      setTimeout(attemptClick, 1200);
-      setTimeout(attemptClick, 3000);
-      setTimeout(attemptClick, 5500);
-    });
+    }
   }
 
   function ensureHeroAutoplay(){
